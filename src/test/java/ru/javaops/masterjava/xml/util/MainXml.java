@@ -24,6 +24,7 @@ public class MainXml {
 
         Set<User> users = parseWithJaxb(PROJECT_NAME, PAYLOAD_URL);
         users.forEach(System.out::println);
+        System.out.println(createUserHtmlTable(users));
     }
 
     private static Set<User> parseWithJaxb(final String PROJECT_NAME, final URL PAYLOAD_URL) {
@@ -49,7 +50,14 @@ public class MainXml {
                     .collect(Collectors.toCollection(() ->
                             new TreeSet<>(Comparator.comparing(User::getValue).thenComparing(User::getEmail))));
         } else {
-            throw  new IllegalArgumentException("Payload is null");
+            throw new IllegalArgumentException("Payload is null");
         }
+    }
+
+    private static String createUserHtmlTable(Set<User> users) {
+        HTMLTableBuilder tableBuilder = new HTMLTableBuilder(2);
+        tableBuilder.addTableHeader("Name", "E-mail");
+        users.forEach(u -> tableBuilder.addRowValues(u.getValue(), u.getEmail()));
+        return tableBuilder.build();
     }
 }
